@@ -4,8 +4,8 @@ open FSharpPlus
 open System.Text.RegularExpressions
 
 type Policy = {
-  Min: int
-  Max: int
+  Lower: int
+  Upper: int
   Char: char
 }
 type InputLine = {
@@ -20,23 +20,22 @@ let parseLine input =
   let letter = regex.Groups.[3].Value |> char
   let password = regex.Groups.[4].Value
   { Policy = {
-      Min = min
-      Max = max
+      Lower = min
+      Upper = max
       Char = letter }
     Password = password }
 
-let isValid policy password =
+let part1valid policy password =
   let count = Regex.Matches(password, policy.Char |> string).Count
-  let result = count >= policy.Min && count <= policy.Max
-  result
+  count >= policy.Lower && count <= policy.Upper
 
-let part1 =
-  Seq.where (fun line -> isValid line.Policy line.Password)
+let part2valid policy (password: string) =
+  let check pos = password.[pos - 1] = policy.Char
+  (check policy.Lower) <> (check policy.Upper)
+
+let countValid validator =
+  Seq.where (fun line -> validator line.Policy line.Password)
   >> Seq.length
-
-let part2 : (int * int * int) seq -> _ =
-  Seq.head
-  >> (fun (a, b, c) -> a * b * c)
 
 open System
 open System.IO
@@ -46,7 +45,7 @@ let run =
   "input/Day2.txt"
   |> File.ReadAllLines :> _ seq
   |> Seq.map parseLine
-  |> part1
+  |> countValid part2valid
   |> Console.WriteLine
 
 [<EntryPoint>]
