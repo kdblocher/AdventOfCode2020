@@ -38,8 +38,3 @@ let run =
   |> getThreeEntriesSumToTarget 2020
   |> part2
   |> Console.Write
-
-[<EntryPoint>]
-let main _ =
-  run
-  0

@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Day1.fs"/>
+    <Compile Include="Day2.fs"/>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Hedgehog" Version="0.8.4"/>
