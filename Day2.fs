@@ -47,8 +47,3 @@ let run =
   |> Seq.map parseLine
   |> countValid part2valid
   |> Console.WriteLine
-
-[<EntryPoint>]
-let main _ =
-  run
-  0
