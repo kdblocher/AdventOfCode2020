@@ -1,7 +1,6 @@
 module Day2
 
 open FSharpPlus
-open System.Text.RegularExpressions
 
 type Policy = {
   Lower: int
@@ -13,6 +12,7 @@ type InputLine = {
   Password: string
 }
 
+open System.Text.RegularExpressions
 let parseLine input =
   let regex = Regex.Match (input, "(\d+)\-(\d+) (.)\: (.+)")
   let min = regex.Groups.[1].Value |> int

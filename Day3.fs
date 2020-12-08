@@ -40,8 +40,3 @@ let run =
   |> Seq.map (Seq.map parse >> Seq.toArray)
   |> part2
   |> Console.WriteLine
-
-[<EntryPoint>]
-let main _ =
-  run
-  0
