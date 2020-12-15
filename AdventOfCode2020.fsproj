@@ -4,13 +4,14 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Day1.fs" />
-    <Compile Include="Day2.fs" />
-    <Compile Include="Day3.fs" />
-    <Compile Include="Day4.fs" />
+    <Compile Include="Day1.fs"/>
+    <Compile Include="Day2.fs"/>
+    <Compile Include="Day3.fs"/>
+    <Compile Include="Day4.fs"/>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Hedgehog" Version="0.8.4" />
-    <PackageReference Include="FSharpPlus" Version="1.1.5" />
+    <PackageReference Include="Hedgehog" Version="0.8.4"/>
+    <PackageReference Include="FSharpPlus" Version="1.1.5"/>
+    <PackageReference Include="FsToolkit.ErrorHandling" Version="2.0.0"/>
   </ItemGroup>
 </Project>
