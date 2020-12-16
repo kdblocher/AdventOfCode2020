@@ -208,8 +208,3 @@ let run () =
   |> Passport.parseMultiple
   |> part2
   |> Console.WriteLine
-
-[<EntryPoint>]
-let main _ =
-  run ()
-  0
