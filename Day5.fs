@@ -36,8 +36,7 @@ let part2 : Seat seq -> int =
   Seq.sortBy seatId
   >> Seq.filter (fun s -> s.Row > 0)
   >> Seq.map seatId
-  >> Seq.windowed 2
-  >> Seq.map (fun array -> array.[0], array.[1])
+  >> Seq.pairwise
   >> Seq.find (fun (a, b) -> a + 2 = b)
   >> fst
   >> (+) 1
