@@ -1,13 +1,13 @@
 module Day6
 
 type Question = char
-type QuestionGroup = {
-  Questions: Question seq 
-  People: Question seq seq
-}
+type QuestionGroup = Question seq seq
 
-let part1 : QuestionGroup seq -> int =
-  Seq.sumBy (fun g -> g.Questions |> Seq.length)
+let sumBy f =
+  Seq.sumBy (Seq.map Set >> Seq.reduce f >> Seq.length)
+
+let part1 : QuestionGroup seq -> _ = sumBy Set.union
+let part2 : QuestionGroup seq -> _ = sumBy Set.intersect
 
 open System.Text.RegularExpressions
 let parseLine input : Question seq =
@@ -16,12 +16,8 @@ let parseLine input : Question seq =
   row |> seq
 
 let parseGroup input : QuestionGroup =
-  let questions =
-    Regex.Split (input, "\r\n")
-    |> Seq.map parseLine
-  { People = questions
-    Questions = questions |> Seq.collect id |> Seq.distinct
-  }
+  Regex.Split (input, "\r\n")
+  |> Seq.map parseLine
   
 let parseFile input =
   Regex.Split (input, "\r\n\r\n")
@@ -33,5 +29,5 @@ let run () =
   "input/Day6.txt"
   |> File.ReadAllText
   |> parseFile
-  |> part1
+  |> part2
   |> Console.WriteLine
