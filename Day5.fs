@@ -49,8 +49,3 @@ let run () =
   |> Seq.map parseLine
   |> part2
   |> Console.WriteLine
-
-[<EntryPoint>]
-let main _ =
-  run ()
-  0
