@@ -42,6 +42,14 @@ let part1 name =
   >> Seq.length
   >> (fun l -> l - 1)
 
+let rec contains name (graph: DirectedGraph) =
+  Map.tryFind name graph
+  |> Option.defaultValue []
+  |> List.sumBy (fun x -> x.Value * (1 + contains x.NodeName graph))
+
+let part2 name =
+  contains name
+
 open System.Text.RegularExpressions
 let parseLine input =
   let regex = Regex.Match (input, "^([\w\s]+) bags contain ((\d+)? ?([\w\s]+) bags?[,.]\s?)+$")
@@ -68,5 +76,5 @@ let run () =
   "input/Day7.txt"
   |> File.ReadAllLines
   |> parse
-  |> part1 "shiny gold"
+  |> part2 "shiny gold"
   |> Console.WriteLine
