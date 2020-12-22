@@ -57,6 +57,17 @@ let part1 preamble =
     | Error number -> number
     | Ok _ -> failwith "unexpected"
 
+let part2 preamble (input: int64 array) =
+  let key = part1 preamble input
+  let rec loop head tail sum =
+    if sum = key then
+      let nums = Array.sub input head (tail - head) 
+      Array.min nums + Array.max nums
+    else if sum > key then loop (head + 1) tail (sum - input.[head])
+    else if sum < key then loop head (tail + 1) (sum + input.[tail])
+    else failwith "unexpected"
+  loop 0 0 0L
+
 let parse preambleLength =
   Array.map int64
   >> Array.splitAt preambleLength
@@ -67,5 +78,5 @@ let run () =
   "input/Day9.txt"
   |> File.ReadAllLines
   |> parse 25
-  |> (fun (preamble, input) -> part1 preamble input)
+  |> (fun (preamble, input) -> part2 preamble input)
   |> Console.WriteLine
