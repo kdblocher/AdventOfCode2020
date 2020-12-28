@@ -2,5 +2,5 @@ module Program
 
 [<EntryPoint>]
 let main _ =
-  Day14.run ()
+  Day15.run ()
   0
