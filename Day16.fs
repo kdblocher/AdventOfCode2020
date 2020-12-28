@@ -1,5 +1,9 @@
 module Day16
 
+module List =
+  let cons a b = a :: b
+module Tuple =
+  let flip (a, b) = b, a
 type Range = {
   Lower: int
   Upper: int
@@ -21,6 +25,8 @@ let combine (r1, r2) =
   elif r2.Lower < r1.Upper && r2.Upper >= r1.Lower + 1 then Some { Lower = r2.Lower; Upper = r1.Upper }
   else None
 
+let sortRanges = Array.sortBy (fun r -> r.Lower, r.Upper)
+
 let consolidate =
   let rec scan =
     function
@@ -30,7 +36,7 @@ let consolidate =
       match combine (r1, r2) with
       | Some r -> r :: scan ranges
       | None -> r1 :: scan (r2 :: ranges)
-  Array.sortBy (fun r -> r.Lower, r.Upper)
+  sortRanges
   >> List.ofArray
   >> scan
   >> List.toArray
@@ -38,20 +44,67 @@ let consolidate =
 let inRange v r =
   v >= r.Lower && v <= r.Upper
 
-let validate { Fields = fields } =
+
+let inline validForAnyRange fields  =
   let ranges =
     fields
     |> Array.collect (fun f -> f.Ranges)
-    |> Array.sortBy (fun r -> r.Lower, r.Upper)
     |> consolidate
+    |> Array.toSeq
   fun v -> ranges |> Seq.exists (inRange v)
 
 let part1 notes =
-  let validate = validate notes
+  let validate = validForAnyRange notes.Fields
   notes.NearbyTickets
   |> Seq.collect id
   |> Seq.filter (not << validate)
   |> Seq.sum
+
+let candidateFields fields v =
+  fields
+  |> Array.filter (fun f -> validForAnyRange (Array.singleton f) v)
+  |> set
+
+let candidateFieldsForPosition fields =
+  Seq.map (candidateFields fields) >> Set.intersectMany
+
+let allCandidatePositions (fields: Field array) validTickets =
+  let length = validTickets |> Seq.head |> Array.length
+  { 0 .. length - 1 }
+  |> Seq.map (fun i ->
+    validTickets
+    |> Seq.map (fun t -> Array.get t i)
+    |> candidateFieldsForPosition fields)
+  |> Seq.indexed
+  |> Map
+
+let constraintSolve =
+  let rec loop constraints =
+    if   Map.isEmpty constraints then Some []
+    elif constraints |> Map.exists (fun _ -> Set.isEmpty) then None
+    else
+      match constraints |> Map.tryFindKey (fun _ s -> s |> Set.count |> (=) 1) with
+      | Some k ->
+        let e = constraints.[k] |> Set.toSeq |> Seq.head
+        constraints
+        |> Map.map (fun _ -> Set.remove e)
+        |> Map.remove k
+        |> loop
+        |> Option.map (List.cons (k, e))
+      | _ -> failwith "backtracking not implemented"
+  loop >> Option.map (Seq.map Tuple.flip >> Map)
+
+let part2 notes =
+  notes.NearbyTickets
+  |> Seq.append (Seq.singleton notes.MyTicket)
+  |> Seq.filter (Array.forall (validForAnyRange notes.Fields))
+  |> allCandidatePositions notes.Fields
+  |> constraintSolve
+  |> Option.get
+  |> Map.filter (fun k _ -> k.Name.StartsWith "departure")
+  |> Map.toSeq
+  |> Seq.map (snd >> (fun i -> notes.MyTicket.[i] |> int64))
+  |> Seq.fold (*) 1L
 
 open System.Text.RegularExpressions
 
@@ -70,7 +123,7 @@ let parseField input =
     Ranges = [|
       { Lower = lower1; Upper = upper1 }
       { Lower = lower2; Upper = upper2 }
-    |]
+    |] |> sortRanges
   }
 
 let parse input =
@@ -90,5 +143,5 @@ let run () =
   "input/Day16.txt"
   |> File.ReadAllText
   |> parse
-  |> part1
+  |> part2
   |> Console.WriteLine
