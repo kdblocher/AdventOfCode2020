@@ -33,16 +33,21 @@ let play nums =
   |> Seq.append starting
   |> Seq.skip 1
 
-let input =     [ 20;0;1;11;6;3 ]
-let testInput = [ 0;3;6 ]
+let solve turn =
+  play
+  >> Seq.skip (turn - 1)
+  >> Seq.head
+  >> (fun state -> state.LastSpoken)
 
-let part1 =
-  input
-  |> play
-  |> Seq.find (fun state -> state.Turn = 2020)
-  |> (fun state -> state.LastSpoken)
+let input =     [ 20;0;1;11;6;3 ]
+
+let part1 () =
+  solve 2020 input
+
+let part2 () =
+  solve 30000000 input
 
 open System
 let run () =
-  part1
+  part2 ()
   |> Console.WriteLine
