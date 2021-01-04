@@ -13,11 +13,11 @@ module Parse =
 
   let private opp = new OperatorPrecedenceParser<_,_,_>()
 
-  let private infixOp op map =
-    opp.AddOperator (InfixOperator (op, spaces, 1, Associativity.Left, map))
+  let private infixOp op prec map =
+    opp.AddOperator (InfixOperator (op, spaces, prec, Associativity.Left, map))
 
-  infixOp "+" (fun x y -> Operation (x, Add, y))
-  infixOp "*" (fun x y -> Operation (x, Multiply, y))
+  infixOp "+" 2 (fun x y -> Operation (x, Add, y))
+  infixOp "*" 1 (fun x y -> Operation (x, Multiply, y))
 
   let private parseExp = opp.ExpressionParser
 
